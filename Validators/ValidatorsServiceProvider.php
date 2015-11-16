@@ -89,15 +89,15 @@ class ValidatorsServiceProvider extends ServiceProvider {
 		});
 
 		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleUpdateValidator', function($app){
-			return new LocaleUpdateValidator();
+			return new LocaleUpdateValidator($app['Cookbook\Contracts\Locales\LocaleRepositoryContract']);
 		});
 
 		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleDeleteValidator', function($app){
-			return new LocaleDeleteValidator();
+			return new LocaleDeleteValidator($app['Cookbook\Contracts\Locales\LocaleRepositoryContract']);
 		});
 
 		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleFetchValidator', function($app){
-			return new LocaleFetchValidator();
+			return new LocaleFetchValidator($app['Cookbook\Contracts\Locales\LocaleRepositoryContract']);
 		});
 
 		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleGetValidator', function($app){

@@ -16,9 +16,9 @@ use Cookbook\Core\Validation\Validator;
 use Cookbook\Contracts\Locales\LocaleRepositoryContract;
 
 /**
- * LocaleCreateValidator class
+ * LocaleUpdateValidator class
  * 
- * Validating command for creating locale
+ * Validating command for updating locale
  * 
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
@@ -27,7 +27,7 @@ use Cookbook\Contracts\Locales\LocaleRepositoryContract;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class LocaleCreateValidator extends Validator
+class LocaleUpdateValidator extends Validator
 {
 
 	/**
@@ -45,7 +45,7 @@ class LocaleCreateValidator extends Validator
 	protected $rules;
 
 	/**
-	 * Create new LocaleCreateValidator
+	 * Create new LocaleUpdateValidator
 	 * 
 	 * @return void
 	 */
@@ -56,9 +56,9 @@ class LocaleCreateValidator extends Validator
 			'code'					=> [
 				'required', 
 				'unique:locales,code', 
-				'regex:^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$'
+				'regex:/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/'
 			],
-			'name'					=> 'required|min:3|max:250',
+			'name'					=> 'sometimes|required|min:3|max:250',
 			'description'			=> 'sometimes'
 		];
 

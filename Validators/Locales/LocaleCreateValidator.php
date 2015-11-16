@@ -49,7 +49,7 @@ class LocaleCreateValidator extends Validator
 			'code'					=> [
 				'required', 
 				'unique:locales,code', 
-				'regex:^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$'
+				'regex:/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/'
 			],
 			'name'					=> 'required|min:3|max:250',
 			'description'			=> 'sometimes'

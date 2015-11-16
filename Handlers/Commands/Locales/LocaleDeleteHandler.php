@@ -53,6 +53,6 @@ class LocaleDeleteHandler extends RepositoryCommandHandler
 	{
 		$locale = $this->repository->delete($command->id);
 
-		return $locale;
+		return $locale->id;
 	}
 }

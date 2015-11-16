@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Debug\Dumper;
 
-require_once(__DIR__ . '/../database/seeders/UserTestDbSeeder.php');
+require_once(__DIR__ . '/../database/seeders/LocaleTestDbSeeder.php');
 require_once(__DIR__ . '/../database/seeders/ClearDB.php');
 
 class LocaleTest extends Orchestra\Testbench\TestCase
@@ -93,124 +93,139 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		]);
 	}
 
-	// /**
-	//  * @expectedException \Cookbook\Core\Exceptions\ValidationException
-	//  */
-	// public function testCreateException()
-	// {
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
+	/**
+	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 */
+	public function testCreateException()
+	{
+		fwrite(STDOUT, __METHOD__ . "\n");
 
-	// 	$params = [
-	// 		'name' => 'John Doe',
-	// 		'email' => 'john.doe',
-	// 		'password' => 'secret123'
-	// 	];
+		$params = [
+			'code' => 'en_enneene',
+			'name' => 'English'
+		];
 
 
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserCreateCommand($params));
-	// }
-
-	// public function testUpdateUser()
-	// {
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
-
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-
-	// 	$params = [
-	// 		'name' => 'Jane Margaret Doe'
-	// 	];
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleCreateCommand($params));
 		
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserUpdateCommand($params, 1));
+	}
+
+	public function testUpdateLocale()
+	{
+		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+
+		$params = [
+			'code' => 'en_GB'
+		];
 		
-	// 	$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
-	// 	$this->assertTrue(is_int($result->id));
-	// 	$this->assertEquals(1, $result->id);
-	// 	$this->assertEquals('jane.doe@email.com', $result->email);
-	// 	$this->assertEquals('Jane Margaret Doe', $result->name);
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
 		
-	// 	$this->d->dump($result->toArray());
-	// }
+		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue(is_int($result->id));
+		$this->assertEquals(1, $result->id);
+		$this->assertEquals('en_GB', $result->code);
+		$this->assertEquals('English', $result->name);
+		
+		$this->d->dump($result->toArray());
+	}
 
-	// /**
-	//  * @expectedException \Cookbook\Core\Exceptions\NotFoundException
-	//  */
-	// public function testUpdateException()
-	// {
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
+	/**
+	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 */
+	public function testUpdateException()
+	{
+		fwrite(STDOUT, __METHOD__ . "\n");
 
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-	// 	$params = [
-			
-	// 	];
+		$params = [
+			'code' => 'en_enene'
+		];
 
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserUpdateCommand($params, 1222));
-	// }
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+	}
 
-	// public function testDeleteUser()
-	// {
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
+	public function testDeleteLocale()
+	{
+		fwrite(STDOUT, __METHOD__ . "\n");
 
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserDeleteCommand([], 1));
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleDeleteCommand([], 1));
 
-	// 	$this->assertEquals(1, $result);
-	// 	$this->d->dump($result);
+		$this->assertEquals(1, $result);
+		$this->d->dump($result);
 
-	// }
+	}
 
-	// /**
-	//  * @expectedException \Cookbook\Core\Exceptions\NotFoundException
-	//  */
-	// public function testDeleteException()
-	// {
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
+	/**
+	 * @expectedException \Cookbook\Core\Exceptions\NotFoundException
+	 */
+	public function testDeleteException()
+	{
+		fwrite(STDOUT, __METHOD__ . "\n");
 
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserDeleteCommand([], 133));
-	// }
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleDeleteCommand([], 133));
+	}
 	
-	// public function testFetchUser()
-	// {
+	public function testFetchLocale()
+	{
 
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
+		fwrite(STDOUT, __METHOD__ . "\n");
 
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserFetchCommand([], 1));
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleFetchCommand([], 1));
 
-	// 	$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
-	// 	$this->assertTrue(is_int($result->id));
-	// 	$this->assertEquals('Jane Doe', $result->name);
-	// 	$this->assertEquals('jane.doe@email.com', $result->email);
-	// 	$this->d->dump($result->toArray());
-		
+		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue(is_int($result->id));
+		$this->assertEquals('en_US', $result->code);
+		$this->assertEquals('English', $result->name);
+		$this->d->dump($result->toArray());
+	}
 
-	// }
+	public function testFetchLocaleByCode()
+	{
+
+		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleFetchCommand([], 'en_US'));
+
+		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue(is_int($result->id));
+		$this->assertEquals('en_US', $result->code);
+		$this->assertEquals('English', $result->name);
+		$this->d->dump($result->toArray());
+	}
 
 	
-	// public function testGetUsers()
-	// {
-	// 	fwrite(STDOUT, __METHOD__ . "\n");
+	public function testGetLocales()
+	{
+		fwrite(STDOUT, __METHOD__ . "\n");
 
-	// 	$app = $this->createApplication();
-	// 	$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-	// 	$result = $bus->dispatch( new Cookbook\OAuth\Commands\Users\UserGetCommand([]));
+		$app = $this->createApplication();
+		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleGetCommand([]));
 
-	// 	$this->assertTrue($result instanceof Cookbook\Core\Repositories\Collection);
-	// 	$this->assertEquals(count($result), 1);
-	// 	$this->d->dump($result->toArray());
+		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Collection);
+		$this->assertEquals(4, count($result));
+		$this->d->dump($result->toArray());
 
-	// }
+	}
 
 }
