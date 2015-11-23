@@ -171,11 +171,8 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 	 */
 	protected function _fetch($id, $include = [])
 	{
-		if(is_string($id) && preg_match('/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/', $id))
-		{
-			return $this->fetchByCode($id, $include);
-		}
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 		
 		if(Trunk::has($params, 'locale'))
 		{
@@ -185,6 +182,11 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 			$meta = ['id' => $id, 'include' => $include];
 			$locale->setMeta($meta);
 			return $locale;
+		}
+		
+		if(is_string($id) && preg_match('/^[a-z]{2}(_[A-Z]{1}[a-z]{3})?(_[A-Z]{2})?$/', $id))
+		{
+			return $this->fetchByCode($id, $include);
 		}
 
 		$locale = $this->db->table('locales')->find($id);
@@ -217,6 +219,7 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 	protected function _get($filter = [], $offset = 0, $limit = 0, $sort = [], $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 
 		if(Trunk::has($params, 'locale'))
 		{
@@ -284,6 +287,7 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 	public function fetchByCode($code, $include = [])
 	{
 		$params = func_get_args();
+		$params['function'] = __METHOD__;
 		
 		if(Trunk::has($params, 'locale'))
 		{
