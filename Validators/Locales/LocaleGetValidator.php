@@ -64,7 +64,8 @@ class LocaleGetValidator extends Validator
 			'id',
 			'code',
 			'name',
-			'created_at'
+			'created_at',
+			'updated_at'
 		];
 
 		$this->availableFilters = [
@@ -72,7 +73,8 @@ class LocaleGetValidator extends Validator
 			'code'				=> ['e', 'ne', 'in', 'nin'],
 			'name'				=> ['e', 'ne', 'in', 'nin'],
 			'description'		=> ['e', 'ne', 'in', 'nin'],
-			'created_at'		=> ['lt', 'lte', 'gt', 'gte']
+			'created_at'		=> ['e', 'ne', 'lt', 'lte', 'gt', 'gte', 'in', 'nin'],
+			'updated_at'		=> ['e', 'ne', 'lt', 'lte', 'gt', 'gte', 'in', 'nin']
 		];
 
 		$this->defaultSorting = ['-created_at'];
