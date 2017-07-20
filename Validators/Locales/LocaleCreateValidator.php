@@ -73,7 +73,7 @@ class LocaleCreateValidator extends Validator
 	 */
 	public function validate(RepositoryCommand $command)
 	{
-		$this->validateParams($command->params, $this->rules, true);
+		$this->validateParams($command, $this->rules, true);
 
 		if( $this->exception->hasErrors() )
 		{
