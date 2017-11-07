@@ -20,6 +20,7 @@ use Cookbook\Core\Repositories\Model;
 use Cookbook\Core\Repositories\UsesCache;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 /**
@@ -93,6 +94,9 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 			throw new \Exception('Failed to insert locale');
 		}
 
+
+		Cache::forget('locales');
+
 		// and return newly created locale
 		return $locale;
 		
@@ -124,6 +128,7 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 
 		Trunk::forgetType('locale');
 		$locale = $this->fetch($id);
+		Cache::forget('locales');
 
 		// and return locale
 		return $locale;
@@ -150,6 +155,7 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 		// delete the locale
 		$this->db->table('locales')->where('id', '=', $locale->id)->delete();
 		Trunk::forgetType('locale');
+		Cache::forget('locales');
 		return $locale;
 	}
 	
