@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/locales package.
+ * This file is part of the congraph/locales package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Locales\Validators;
+namespace Congraph\Locales\Validators;
 
 use Illuminate\Support\ServiceProvider;
 
-use Cookbook\Locales\Validators\Locales\LocaleCreateValidator;
-use Cookbook\Locales\Validators\Locales\LocaleUpdateValidator;
-use Cookbook\Locales\Validators\Locales\LocaleDeleteValidator;
-use Cookbook\Locales\Validators\Locales\LocaleFetchValidator;
-use Cookbook\Locales\Validators\Locales\LocaleGetValidator;
+use Congraph\Locales\Validators\Locales\LocaleCreateValidator;
+use Congraph\Locales\Validators\Locales\LocaleUpdateValidator;
+use Congraph\Locales\Validators\Locales\LocaleDeleteValidator;
+use Congraph\Locales\Validators\Locales\LocaleFetchValidator;
+use Congraph\Locales\Validators\Locales\LocaleGetValidator;
 
 /**
  * ValidatorsServiceProvider service provider for validators
@@ -27,7 +27,7 @@ use Cookbook\Locales\Validators\Locales\LocaleGetValidator;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/locales
+ * @package 	congraph/locales
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -61,16 +61,16 @@ class ValidatorsServiceProvider extends ServiceProvider {
 		
 		$mappings = [
 			// Locales
-			'Cookbook\Locales\Commands\Locales\LocaleCreateCommand' => 
-				'Cookbook\Locales\Validators\Locales\LocaleCreateValidator@validate',
-			'Cookbook\Locales\Commands\Locales\LocaleUpdateCommand' => 
-				'Cookbook\Locales\Validators\Locales\LocaleUpdateValidator@validate',
-			'Cookbook\Locales\Commands\Locales\LocaleDeleteCommand' => 
-				'Cookbook\Locales\Validators\Locales\LocaleDeleteValidator@validate',
-			'Cookbook\Locales\Commands\Locales\LocaleFetchCommand' => 
-				'Cookbook\Locales\Validators\Locales\LocaleFetchValidator@validate',
-			'Cookbook\Locales\Commands\Locales\LocaleGetCommand' => 
-				'Cookbook\Locales\Validators\Locales\LocaleGetValidator@validate',
+			'Congraph\Locales\Commands\Locales\LocaleCreateCommand' => 
+				'Congraph\Locales\Validators\Locales\LocaleCreateValidator@validate',
+			'Congraph\Locales\Commands\Locales\LocaleUpdateCommand' => 
+				'Congraph\Locales\Validators\Locales\LocaleUpdateValidator@validate',
+			'Congraph\Locales\Commands\Locales\LocaleDeleteCommand' => 
+				'Congraph\Locales\Validators\Locales\LocaleDeleteValidator@validate',
+			'Congraph\Locales\Commands\Locales\LocaleFetchCommand' => 
+				'Congraph\Locales\Validators\Locales\LocaleFetchValidator@validate',
+			'Congraph\Locales\Commands\Locales\LocaleGetCommand' => 
+				'Congraph\Locales\Validators\Locales\LocaleGetValidator@validate',
 		];
 
 		$this->app->make('Illuminate\Contracts\Bus\Dispatcher')->mapValidators($mappings);
@@ -84,23 +84,23 @@ class ValidatorsServiceProvider extends ServiceProvider {
 	public function registerValidators() {
 
 		// Locales
-		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleCreateValidator', function($app){
+		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleCreateValidator', function($app){
 			return new LocaleCreateValidator();
 		});
 
-		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleUpdateValidator', function($app){
-			return new LocaleUpdateValidator($app['Cookbook\Contracts\Locales\LocaleRepositoryContract']);
+		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleUpdateValidator', function($app){
+			return new LocaleUpdateValidator($app['Congraph\Contracts\Locales\LocaleRepositoryContract']);
 		});
 
-		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleDeleteValidator', function($app){
-			return new LocaleDeleteValidator($app['Cookbook\Contracts\Locales\LocaleRepositoryContract']);
+		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleDeleteValidator', function($app){
+			return new LocaleDeleteValidator($app['Congraph\Contracts\Locales\LocaleRepositoryContract']);
 		});
 
-		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleFetchValidator', function($app){
-			return new LocaleFetchValidator($app['Cookbook\Contracts\Locales\LocaleRepositoryContract']);
+		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleFetchValidator', function($app){
+			return new LocaleFetchValidator($app['Congraph\Contracts\Locales\LocaleRepositoryContract']);
 		});
 
-		$this->app->bind('Cookbook\Locales\Validators\Locales\LocaleGetValidator', function($app){
+		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleGetValidator', function($app){
 			return new LocaleGetValidator();
 		});
 	}
@@ -115,11 +115,11 @@ class ValidatorsServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Locales
-			'Cookbook\Locales\Validators\Locales\LocaleCreateValidator',
-			'Cookbook\Locales\Validators\Locales\LocaleUpdateValidator',
-			'Cookbook\Locales\Validators\Locales\LocaleDeleteValidator',
-			'Cookbook\Locales\Validators\Locales\LocaleFetchValidator',
-			'Cookbook\Locales\Validators\Locales\LocaleGetValidator'
+			'Congraph\Locales\Validators\Locales\LocaleCreateValidator',
+			'Congraph\Locales\Validators\Locales\LocaleUpdateValidator',
+			'Congraph\Locales\Validators\Locales\LocaleDeleteValidator',
+			'Congraph\Locales\Validators\Locales\LocaleFetchValidator',
+			'Congraph\Locales\Validators\Locales\LocaleGetValidator'
 		];
 	}
 }

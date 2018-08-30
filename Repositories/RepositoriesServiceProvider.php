@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/locales package.
+ * This file is part of the congraph/locales package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Locales\Repositories;
+namespace Congraph\Locales\Repositories;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -21,7 +21,7 @@ use Illuminate\Support\ServiceProvider;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/locales
+ * @package 	congraph/locales
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -60,14 +60,14 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	 */
 	protected function registerRepositories()
 	{
-		$this->app->singleton('Cookbook\Locales\Repositories\LocaleRepository', function($app) {
+		$this->app->singleton('Congraph\Locales\Repositories\LocaleRepository', function($app) {
 			return new LocaleRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Cookbook\Locales\Repositories\LocaleRepository', 'Cookbook\Contracts\Locales\LocaleRepositoryContract'
+			'Congraph\Locales\Repositories\LocaleRepository', 'Congraph\Contracts\Locales\LocaleRepositoryContract'
 		);
 	}
 
@@ -79,10 +79,10 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	protected function mapObjectResolvers()
 	{
 		$mappings = [
-			'locale' => 'Cookbook\Locales\Repositories\LocaleRepository'
+			'locale' => 'Congraph\Locales\Repositories\LocaleRepository'
 		];
 
-		$this->app->make('Cookbook\Contracts\Core\ObjectResolverContract')->maps($mappings);
+		$this->app->make('Congraph\Contracts\Core\ObjectResolverContract')->maps($mappings);
 	}
 	/**
 	 * Get the services provided by the provider.
@@ -92,8 +92,8 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	public function provides()
 	{
 		return [
-			'Cookbook\Locales\Repositories\LocaleRepository',
-			'Cookbook\Contracts\Locales\LocaleRepositoryContract'
+			'Congraph\Locales\Repositories\LocaleRepository',
+			'Congraph\Contracts\Locales\LocaleRepositoryContract'
 		];
 	}
 

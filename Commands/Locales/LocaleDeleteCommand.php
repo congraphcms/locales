@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/locales package.
+ * This file is part of the congraph/locales package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Locales\Commands\Locales;
+namespace Congraph\Locales\Commands\Locales;
 
-use Cookbook\Core\Bus\RepositoryCommand;
+use Congraph\Core\Bus\RepositoryCommand;
 
 /**
  * LocaleDeleteCommand class
@@ -19,7 +19,7 @@ use Cookbook\Core\Bus\RepositoryCommand;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/locales
+ * @package 	congraph/locales
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */

@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/locales package.
+ * This file is part of the congraph/locales package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Locales\Handlers\Commands\Locales;
+namespace Congraph\Locales\Handlers\Commands\Locales;
 
 
-use Cookbook\Contracts\Locales\LocaleRepositoryContract;
-use Cookbook\Core\Bus\RepositoryCommandHandler;
-use Cookbook\Core\Bus\RepositoryCommand;
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
+use Congraph\Core\Bus\RepositoryCommandHandler;
+use Congraph\Core\Bus\RepositoryCommand;
 
 /**
  * LocaleGetHandler class
@@ -23,7 +23,7 @@ use Cookbook\Core\Bus\RepositoryCommand;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/locales
+ * @package 	congraph/locales
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -33,7 +33,7 @@ class LocaleGetHandler extends RepositoryCommandHandler
 	/**
 	 * Create new LocaleGetHandler
 	 * 
-	 * @param Cookbook\Contracts\Locales\LocaleRepositoryContract $repository
+	 * @param Congraph\Contracts\Locales\LocaleRepositoryContract $repository
 	 * 
 	 * @return void
 	 */
@@ -45,7 +45,7 @@ class LocaleGetHandler extends RepositoryCommandHandler
 	/**
 	 * Handle RepositoryCommand
 	 * 
-	 * @param Cookbook\Core\Bus\RepositoryCommand $command
+	 * @param Congraph\Core\Bus\RepositoryCommand $command
 	 * 
 	 * @return void
 	 */

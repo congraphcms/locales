@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/locales package.
+ * This file is part of the congraph/locales package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Locales\Validators\Locales;
+namespace Congraph\Locales\Validators\Locales;
 
-use Cookbook\Core\Bus\RepositoryCommand;
-use Cookbook\Core\Validation\Validator;
+use Congraph\Core\Bus\RepositoryCommand;
+use Congraph\Core\Validation\Validator;
 
-use Cookbook\Contracts\Locales\LocaleRepositoryContract;
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
 
 /**
  * LocaleUpdateValidator class
@@ -23,7 +23,7 @@ use Cookbook\Contracts\Locales\LocaleRepositoryContract;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/locales
+ * @package 	congraph/locales
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -33,7 +33,7 @@ class LocaleUpdateValidator extends Validator
 	/**
 	 * Repository for locales
 	 * 
-	 * @var \Cookbook\Contracts\Locales\LocaleRepositoryContract
+	 * @var \Congraph\Contracts\Locales\LocaleRepositoryContract
 	 */
 	protected $localeRepository;
 
@@ -71,7 +71,7 @@ class LocaleUpdateValidator extends Validator
 	/**
 	 * Validate RepositoryCommand
 	 * 
-	 * @param Cookbook\Core\Bus\RepositoryCommand $command
+	 * @param Congraph\Core\Bus\RepositoryCommand $command
 	 * 
 	 * @todo  Create custom validation for all db related checks (DO THIS FOR ALL VALIDATORS)
 	 * @todo  Check all db rules | make validators on repositories

@@ -49,7 +49,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 			'driver'   	=> 'mysql',
 			'host'      => '127.0.0.1',
 			'port'		=> '3306',
-			'database'	=> 'cookbook_testbench',
+			'database'	=> 'congraph_testbench',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',
@@ -61,7 +61,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 	protected function getPackageProviders($app)
 	{
-		return ['Cookbook\Locales\LocalesServiceProvider', 'Cookbook\Core\CoreServiceProvider'];
+		return ['Congraph\Locales\LocalesServiceProvider', 'Congraph\Core\CoreServiceProvider'];
 	}
 
 	public function testCreateLocale()
@@ -78,7 +78,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleCreateCommand($params));
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('Czech', $result->name);
@@ -94,7 +94,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testCreateException()
 	{
@@ -109,7 +109,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 		
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleCreateCommand($params));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleCreateCommand($params));
 		
 	}
 
@@ -124,9 +124,9 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 			'code' => 'en_GB'
 		];
 		
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
 		
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals(1, $result->id);
 		$this->assertEquals('en_GB', $result->code);
@@ -136,7 +136,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\ValidationException
+	 * @expectedException \Congraph\Core\Exceptions\ValidationException
 	 */
 	public function testUpdateException()
 	{
@@ -149,7 +149,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 			'code' => 'en_enene'
 		];
 
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
 	}
 
 	public function testDeleteLocale()
@@ -159,7 +159,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleDeleteCommand([], 1));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleDeleteCommand([], 1));
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
@@ -167,7 +167,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 	}
 
 	/**
-	 * @expectedException \Cookbook\Core\Exceptions\NotFoundException
+	 * @expectedException \Congraph\Core\Exceptions\NotFoundException
 	 */
 	public function testDeleteException()
 	{
@@ -176,7 +176,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleDeleteCommand([], 133));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleDeleteCommand([], 133));
 	}
 	
 	public function testFetchLocale()
@@ -187,9 +187,9 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleFetchCommand([], 1));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleFetchCommand([], 1));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals('en_US', $result->code);
 		$this->assertEquals('English', $result->name);
@@ -204,9 +204,9 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
 
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleFetchCommand([], 'en_US'));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleFetchCommand([], 'en_US'));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Model);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
 		$this->assertEquals('en_US', $result->code);
 		$this->assertEquals('English', $result->name);
@@ -220,9 +220,9 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 		$app = $this->createApplication();
 		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Cookbook\Locales\Commands\Locales\LocaleGetCommand([]));
+		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleGetCommand([]));
 
-		$this->assertTrue($result instanceof Cookbook\Core\Repositories\Collection);
+		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
 		$this->assertEquals(4, count($result));
 		$this->d->dump($result->toArray());
 

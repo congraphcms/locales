@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the cookbook/locales package.
+ * This file is part of the congraph/locales package.
  *
  * (c) Nikola Plavšić <nikolaplavsic@gmail.com>
  *
@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Cookbook\Locales\Handlers;
+namespace Congraph\Locales\Handlers;
 
 use Illuminate\Support\ServiceProvider;
 
-use Cookbook\Locales\Handlers\Commands\Locales\LocaleCreateHandler;
-use Cookbook\Locales\Handlers\Commands\Locales\LocaleUpdateHandler;
-use Cookbook\Locales\Handlers\Commands\Locales\LocaleDeleteHandler;
-use Cookbook\Locales\Handlers\Commands\Locales\LocaleFetchHandler;
-use Cookbook\Locales\Handlers\Commands\Locales\LocaleGetHandler;
+use Congraph\Locales\Handlers\Commands\Locales\LocaleCreateHandler;
+use Congraph\Locales\Handlers\Commands\Locales\LocaleUpdateHandler;
+use Congraph\Locales\Handlers\Commands\Locales\LocaleDeleteHandler;
+use Congraph\Locales\Handlers\Commands\Locales\LocaleFetchHandler;
+use Congraph\Locales\Handlers\Commands\Locales\LocaleGetHandler;
 
 /**
  * HandlersServiceProvider service provider for handlers
@@ -27,7 +27,7 @@ use Cookbook\Locales\Handlers\Commands\Locales\LocaleGetHandler;
  * 
  * @author  	Nikola Plavšić <nikolaplavsic@gmail.com>
  * @copyright  	Nikola Plavšić <nikolaplavsic@gmail.com>
- * @package 	cookbook/locales
+ * @package 	congraph/locales
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
@@ -70,16 +70,16 @@ class HandlersServiceProvider extends ServiceProvider {
 		
 		$mappings = [
 			// Locales
-			'Cookbook\Locales\Commands\Locales\LocaleCreateCommand' => 
-				'Cookbook\Locales\Handlers\Commands\Locales\LocaleCreateHandler@handle',
-			'Cookbook\Locales\Commands\Locales\LocaleUpdateCommand' => 
-				'Cookbook\Locales\Handlers\Commands\Locales\LocaleUpdateHandler@handle',
-			'Cookbook\Locales\Commands\Locales\LocaleDeleteCommand' => 
-				'Cookbook\Locales\Handlers\Commands\Locales\LocaleDeleteHandler@handle',
-			'Cookbook\Locales\Commands\Locales\LocaleFetchCommand' => 
-				'Cookbook\Locales\Handlers\Commands\Locales\LocaleFetchHandler@handle',
-			'Cookbook\Locales\Commands\Locales\LocaleGetCommand' => 
-				'Cookbook\Locales\Handlers\Commands\Locales\LocaleGetHandler@handle',
+			'Congraph\Locales\Commands\Locales\LocaleCreateCommand' => 
+				'Congraph\Locales\Handlers\Commands\Locales\LocaleCreateHandler@handle',
+			'Congraph\Locales\Commands\Locales\LocaleUpdateCommand' => 
+				'Congraph\Locales\Handlers\Commands\Locales\LocaleUpdateHandler@handle',
+			'Congraph\Locales\Commands\Locales\LocaleDeleteCommand' => 
+				'Congraph\Locales\Handlers\Commands\Locales\LocaleDeleteHandler@handle',
+			'Congraph\Locales\Commands\Locales\LocaleFetchCommand' => 
+				'Congraph\Locales\Handlers\Commands\Locales\LocaleFetchHandler@handle',
+			'Congraph\Locales\Commands\Locales\LocaleGetCommand' => 
+				'Congraph\Locales\Handlers\Commands\Locales\LocaleGetHandler@handle',
 
 		];
 
@@ -95,24 +95,24 @@ class HandlersServiceProvider extends ServiceProvider {
 		
 		// Locales
 		
-		$this->app->bind('Cookbook\Locales\Handlers\Commands\Locales\LocaleCreateHandler', function($app){
-			return new LocaleCreateHandler($app->make('Cookbook\Contracts\Locales\LocaleRepositoryContract'));
+		$this->app->bind('Congraph\Locales\Handlers\Commands\Locales\LocaleCreateHandler', function($app){
+			return new LocaleCreateHandler($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Locales\Handlers\Commands\Locales\LocaleUpdateHandler', function($app){
-			return new LocaleUpdateHandler($app->make('Cookbook\Contracts\Locales\LocaleRepositoryContract'));
+		$this->app->bind('Congraph\Locales\Handlers\Commands\Locales\LocaleUpdateHandler', function($app){
+			return new LocaleUpdateHandler($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Locales\Handlers\Commands\Locales\LocaleDeleteHandler', function($app){
-			return new LocaleDeleteHandler($app->make('Cookbook\Contracts\Locales\LocaleRepositoryContract'));
+		$this->app->bind('Congraph\Locales\Handlers\Commands\Locales\LocaleDeleteHandler', function($app){
+			return new LocaleDeleteHandler($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Locales\Handlers\Commands\Locales\LocaleFetchHandler', function($app){
-			return new LocaleFetchHandler($app->make('Cookbook\Contracts\Locales\LocaleRepositoryContract'));
+		$this->app->bind('Congraph\Locales\Handlers\Commands\Locales\LocaleFetchHandler', function($app){
+			return new LocaleFetchHandler($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
 		});
 
-		$this->app->bind('Cookbook\Locales\Handlers\Commands\Locales\LocaleGetHandler', function($app){
-			return new LocaleGetHandler($app->make('Cookbook\Contracts\Locales\LocaleRepositoryContract'));
+		$this->app->bind('Congraph\Locales\Handlers\Commands\Locales\LocaleGetHandler', function($app){
+			return new LocaleGetHandler($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
 		});
 	}
 
@@ -126,11 +126,11 @@ class HandlersServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Locales
-			'Cookbook\Locales\Handlers\Commands\Locales\LocaleCreateHandler',
-			'Cookbook\Locales\Handlers\Commands\Locales\LocaleUpdateHandler',
-			'Cookbook\Locales\Handlers\Commands\Locales\LocaleDeleteHandler',
-			'Cookbook\Locales\Handlers\Commands\Locales\LocaleFetchHandler',
-			'Cookbook\Locales\Handlers\Commands\Locales\LocaleGetHandler'
+			'Congraph\Locales\Handlers\Commands\Locales\LocaleCreateHandler',
+			'Congraph\Locales\Handlers\Commands\Locales\LocaleUpdateHandler',
+			'Congraph\Locales\Handlers\Commands\Locales\LocaleDeleteHandler',
+			'Congraph\Locales\Handlers\Commands\Locales\LocaleFetchHandler',
+			'Congraph\Locales\Handlers\Commands\Locales\LocaleGetHandler'
 		];
 	}
 }
