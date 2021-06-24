@@ -9,8 +9,7 @@ require_once(__DIR__ . '/../database/seeders/ClearDB.php');
 class LocaleTest extends Orchestra\Testbench\TestCase
 {
 
-	public function setUp()
-	{
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->artisan('migrate', [
@@ -27,8 +26,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 	}
 
-	public function tearDown()
-	{
+	public function tearDown(): void {
 		$this->artisan('db:seed', [
 			'--class' => 'ClearDB'
 		]);
@@ -95,12 +93,11 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		]);
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
 	public function testCreateException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
 
 		$params = [
 			'code' => 'en_enneene',
@@ -144,12 +141,11 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$this->d->dump($result->toArray());
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
 	public function testUpdateException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
 
 		$app = $this->createApplication();
 		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
@@ -184,12 +180,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\NotFoundException
-	 */
+	
 	public function testDeleteException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$this->expectException(\Congraph\Core\Exceptions\NotFoundException::class);
 
 		$app = $this->createApplication();
 		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
