@@ -11,6 +11,7 @@
 namespace Congraph\Locales\Repositories;
 
 use Congraph\Contracts\Locales\LocaleRepositoryContract;
+use Congraph\Contracts\Core\RepositoryContract;
 use Congraph\Core\Exceptions\Exception;
 use Congraph\Core\Exceptions\NotFoundException;
 use Congraph\Core\Facades\Trunk;
@@ -37,7 +38,7 @@ use Carbon\Carbon;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class LocaleRepository extends AbstractRepository implements LocaleRepositoryContract//, UsesCache
+class LocaleRepository extends AbstractRepository implements LocaleRepositoryContract, RepositoryContract//, UsesCache
 {
 
 // ----------------------------------------------------------------------------------------------
@@ -250,6 +251,8 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 		$query = $this->parseSorting($query, $sort);
 		
 		$locales = $query->get();
+
+		$locales = $locales->toArray();
 
 		if( ! $locales )
 		{

@@ -61,15 +61,15 @@ class LocalesServiceProvider extends ServiceProvider {
 		
 		// Handlers
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Locales\Handlers\HandlersServiceProvider');
-
-		// Validators
-		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Locales\Validators\ValidatorsServiceProvider');
+		// $this->app->register('Congraph\Locales\Handlers\HandlersServiceProvider');
 
 		// Commands
 		// -----------------------------------------------------------------------------
 		$this->app->register('Congraph\Locales\Commands\CommandsServiceProvider');
+
+		// Validators
+		// -----------------------------------------------------------------------------
+		$this->app->register('Congraph\Locales\Validators\ValidatorsServiceProvider');
 
 	}
 

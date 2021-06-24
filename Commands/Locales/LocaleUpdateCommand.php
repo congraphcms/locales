@@ -10,6 +10,7 @@
 
 namespace Congraph\Locales\Commands\Locales;
 
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -25,5 +26,27 @@ use Congraph\Core\Bus\RepositoryCommand;
  */
 class LocaleUpdateCommand extends RepositoryCommand
 {
+    /**
+	 * Create new LocaleUpdateCommand
+	 * 
+	 * @param Congraph\Contracts\Locales\LocaleRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(LocaleRepositoryContract $repository)
+	{
+		parent::__construct($repository);
+	}
 
+	/**
+	 * Handle RepositoryCommand
+	 * 
+	 * @return Congraph/Core/Repositories/Model
+	 */
+	public function handle()
+	{
+		$locale = $this->repository->update($this->id, $this->params);
+
+		return $locale;
+	}
 }
