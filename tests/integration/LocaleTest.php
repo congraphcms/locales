@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Debug\Dumper;
+use Symfony\Component\VarDumper\VarDumper as Dumper;
 
 require_once(__DIR__ . '/../database/seeders/LocaleTestDbSeeder.php');
 require_once(__DIR__ . '/../database/seeders/ClearDB.php');
