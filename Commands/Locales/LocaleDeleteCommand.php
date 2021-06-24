@@ -10,6 +10,7 @@
 
 namespace Congraph\Locales\Commands\Locales;
 
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
 use Congraph\Core\Bus\RepositoryCommand;
 
 /**
@@ -25,5 +26,27 @@ use Congraph\Core\Bus\RepositoryCommand;
  */
 class LocaleDeleteCommand extends RepositoryCommand
 {
+    /**
+	 * Create new LocaleDeleteCommand
+	 * 
+	 * @param Congraph\Contracts\Locales\LocaleRepositoryContract $repository
+	 * 
+	 * @return void
+	 */
+	public function __construct(LocaleRepositoryContract $repository)
+	{
+		parent::__construct($repository);
+	}
 
+	/**
+	 * Handle RepositoryCommand
+	 * 
+	 * @return integer // deleted locale ID
+	 */
+	public function handle()
+	{
+		$locale = $this->repository->delete($this->id);
+
+		return $locale->id;
+	}
 }

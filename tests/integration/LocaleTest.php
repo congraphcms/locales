@@ -76,9 +76,11 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleCreateCommand::class);
+		$command->setParams($params);
 		
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleCreateCommand($params));
+		$result = $bus->dispatch($command);
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('Czech', $result->name);
@@ -107,9 +109,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleCreateCommand::class);
+		$command->setParams($params);
 		
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleCreateCommand($params));
+		$result = $bus->dispatch($command);
 		
 	}
 
@@ -118,13 +123,17 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
 		$params = [
 			'code' => 'en_GB'
 		];
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
 		
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+		$result = $bus->dispatch($command);
 		
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -143,13 +152,19 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
 		$params = [
 			'code' => 'en_enene'
 		];
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
+		
+		$result = $bus->dispatch($command);
+		$this->d->dump($result->toArray());
+		
 	}
 
 	public function testDeleteLocale()
@@ -157,9 +172,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleDeleteCommand([], 1));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleDeleteCommand::class);
+		$command->setId(1);
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
@@ -174,9 +192,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleDeleteCommand([], 133));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleDeleteCommand::class);
+		$command->setId(133);
+		
+		$result = $bus->dispatch($command);
 	}
 	
 	public function testFetchLocale()
@@ -185,9 +206,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleFetchCommand([], 1));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleFetchCommand::class);
+		$command->setId(1);
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -202,9 +226,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleFetchCommand([], 'en_US'));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleFetchCommand::class);
+		$command->setId('en_US');
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -219,8 +246,11 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleGetCommand([]));
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleGetCommand::class);
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
 		$this->assertEquals(4, count($result));
