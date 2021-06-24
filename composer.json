@@ -8,13 +8,13 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.2.5|^8.0",
         "congraph/core": "dev-laravel8",
         "congraph/contracts": "dev-laravel8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.0",
-        "orchestra/testbench": "3.8.*"
+        "phpunit/phpunit": "^7.5.15 || ^8.4 || ^9.3.3",
+        "orchestra/testbench": "4.*"
     },
     "autoload": {
         "psr-4": {
