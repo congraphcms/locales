@@ -9,38 +9,23 @@ require_once(__DIR__ . '/../database/seeders/ClearDB.php');
 class LocaleTest extends Orchestra\Testbench\TestCase
 {
 
-	public function setUp(): void {
-		parent::setUp();
+	// ----------------------------------------
+    // ENVIRONMENT
+    // ----------------------------------------
 
-		$this->artisan('migrate', [
-			'--database' => 'testbench',
-			'--path' => realpath(__DIR__.'/../database/migrations'),
-		]);
-
-		$this->artisan('db:seed', [
-			'--class' => 'LocaleTestDbSeeder'
-		]);
-
-		$this->d = new Dumper();
-
-
+    protected function getPackageProviders($app)
+	{
+		return ['Congraph\Locales\LocalesServiceProvider', 'Congraph\Core\CoreServiceProvider'];
 	}
 
-	public function tearDown(): void {
-		$this->artisan('db:seed', [
-			'--class' => 'ClearDB'
-		]);
-		parent::tearDown();
-	}
-
-	/**
+    /**
 	 * Define environment setup.
 	 *
 	 * @param  \Illuminate\Foundation\Application  $app
 	 *
 	 * @return void
 	 */
-	protected function getEnvironmentSetUp($app)
+	protected function defineEnvironment($app)
 	{
 		$app['config']->set('database.default', 'testbench');
 		$app['config']->set('database.connections.testbench', [
@@ -57,10 +42,52 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 	}
 
-	protected function getPackageProviders($app)
-	{
-		return ['Congraph\Locales\LocalesServiceProvider', 'Congraph\Core\CoreServiceProvider'];
+    // ----------------------------------------
+    // DATABASE
+    // ----------------------------------------
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(realpath(__DIR__.'/../database/migrations'));
+
+        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+
+        $this->beforeApplicationDestroyed(function () {
+            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
+        });
+    }
+
+
+    // ----------------------------------------
+    // SETUP
+    // ----------------------------------------
+
+    public function setUp(): void {
+		parent::setUp();
+
+		$this->d = new Dumper();
+
+        $this->artisan('db:seed', [
+			'--class' => 'LocaleTestDbSeeder'
+		]);
 	}
+
+	public function tearDown(): void {
+		$this->artisan('db:seed', [
+			'--class' => 'ClearDB'
+		]);
+		parent::tearDown();
+	}
+
+    // ----------------------------------------
+    // TESTS **********************************
+    // ----------------------------------------
+
 
 	public function testCreateLocale()
 	{
