@@ -13,8 +13,8 @@
         "congraph/contracts": "dev-laravel8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0",
-        "orchestra/testbench": "3.3.*"
+        "phpunit/phpunit": "~5.7",
+        "orchestra/testbench": "3.4.*"
     },
     "autoload": {
         "psr-4": {

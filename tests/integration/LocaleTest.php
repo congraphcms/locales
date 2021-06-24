@@ -15,7 +15,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 		$this->artisan('migrate', [
 			'--database' => 'testbench',
-			'--realpath' => realpath(__DIR__.'/../database/migrations'),
+			'--path' => realpath(__DIR__.'/../database/migrations'),
 		]);
 
 		$this->artisan('db:seed', [
@@ -87,7 +87,7 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$this->assertEquals('cz_CZ', $result->code);
 		$this->assertEquals('Czech language', $result->description);
 		
-		$this->seeInDatabase('locales', [
+		$this->assertDatabaseHas('locales', [
 			'id' => 5, 
 			'code' => 'cz_CZ', 
 			'name' => 'Czech',
