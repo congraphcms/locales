@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Debug\Dumper;
+use Symfony\Component\VarDumper\VarDumper as Dumper;
 
 require_once(__DIR__ . '/../database/seeders/LocaleTestDbSeeder.php');
 require_once(__DIR__ . '/../database/seeders/ClearDB.php');
@@ -9,40 +9,23 @@ require_once(__DIR__ . '/../database/seeders/ClearDB.php');
 class LocaleTest extends Orchestra\Testbench\TestCase
 {
 
-	public function setUp()
+	// ----------------------------------------
+    // ENVIRONMENT
+    // ----------------------------------------
+
+    protected function getPackageProviders($app)
 	{
-		parent::setUp();
-
-		$this->artisan('migrate', [
-			'--database' => 'testbench',
-			'--realpath' => realpath(__DIR__.'/../database/migrations'),
-		]);
-
-		$this->artisan('db:seed', [
-			'--class' => 'LocaleTestDbSeeder'
-		]);
-
-		$this->d = new Dumper();
-
-
+		return ['Congraph\Locales\LocalesServiceProvider', 'Congraph\Core\CoreServiceProvider'];
 	}
 
-	public function tearDown()
-	{
-		$this->artisan('db:seed', [
-			'--class' => 'ClearDB'
-		]);
-		parent::tearDown();
-	}
-
-	/**
+    /**
 	 * Define environment setup.
 	 *
 	 * @param  \Illuminate\Foundation\Application  $app
 	 *
 	 * @return void
 	 */
-	protected function getEnvironmentSetUp($app)
+	protected function defineEnvironment($app)
 	{
 		$app['config']->set('database.default', 'testbench');
 		$app['config']->set('database.connections.testbench', [
@@ -59,10 +42,52 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 	}
 
-	protected function getPackageProviders($app)
-	{
-		return ['Congraph\Locales\LocalesServiceProvider', 'Congraph\Core\CoreServiceProvider'];
+    // ----------------------------------------
+    // DATABASE
+    // ----------------------------------------
+
+    /**
+     * Define database migrations.
+     *
+     * @return void
+     */
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(realpath(__DIR__.'/../database/migrations'));
+
+        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+
+        $this->beforeApplicationDestroyed(function () {
+            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
+        });
+    }
+
+
+    // ----------------------------------------
+    // SETUP
+    // ----------------------------------------
+
+    public function setUp(): void {
+		parent::setUp();
+
+		$this->d = new Dumper();
+
+        $this->artisan('db:seed', [
+			'--class' => 'LocaleTestDbSeeder'
+		]);
 	}
+
+	public function tearDown(): void {
+		$this->artisan('db:seed', [
+			'--class' => 'ClearDB'
+		]);
+		parent::tearDown();
+	}
+
+    // ----------------------------------------
+    // TESTS **********************************
+    // ----------------------------------------
+
 
 	public function testCreateLocale()
 	{
@@ -76,16 +101,18 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleCreateCommand::class);
+		$command->setParams($params);
 		
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleCreateCommand($params));
+		$result = $bus->dispatch($command);
 		
 		$this->d->dump($result->toArray());
 		$this->assertEquals('Czech', $result->name);
 		$this->assertEquals('cz_CZ', $result->code);
 		$this->assertEquals('Czech language', $result->description);
 		
-		$this->seeInDatabase('locales', [
+		$this->assertDatabaseHas('locales', [
 			'id' => 5, 
 			'code' => 'cz_CZ', 
 			'name' => 'Czech',
@@ -93,12 +120,11 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		]);
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
 	public function testCreateException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
+
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
 
 		$params = [
 			'code' => 'en_enneene',
@@ -107,9 +133,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleCreateCommand::class);
+		$command->setParams($params);
 		
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleCreateCommand($params));
+		$result = $bus->dispatch($command);
 		
 	}
 
@@ -118,13 +147,17 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
 		$params = [
 			'code' => 'en_GB'
 		];
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
 		
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+		$result = $bus->dispatch($command);
 		
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -135,21 +168,26 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		$this->d->dump($result->toArray());
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\ValidationException
-	 */
 	public function testUpdateException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
+		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
+
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
 		$params = [
 			'code' => 'en_enene'
 		];
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleUpdateCommand($params, 1));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleUpdateCommand::class);
+		$command->setParams($params);
+		$command->setId(1);
+		
+		$result = $bus->dispatch($command);
+		$this->d->dump($result->toArray());
+		
 	}
 
 	public function testDeleteLocale()
@@ -157,26 +195,32 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleDeleteCommand([], 1));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleDeleteCommand::class);
+		$command->setId(1);
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertEquals(1, $result);
 		$this->d->dump($result);
 
 	}
 
-	/**
-	 * @expectedException \Congraph\Core\Exceptions\NotFoundException
-	 */
+	
 	public function testDeleteException()
 	{
 		fwrite(STDOUT, __METHOD__ . "\n");
 
-		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$this->expectException(\Congraph\Core\Exceptions\NotFoundException::class);
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleDeleteCommand([], 133));
+		$app = $this->createApplication();
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleDeleteCommand::class);
+		$command->setId(133);
+		
+		$result = $bus->dispatch($command);
 	}
 	
 	public function testFetchLocale()
@@ -185,9 +229,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleFetchCommand([], 1));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleFetchCommand::class);
+		$command->setId(1);
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -202,9 +249,12 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
 
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleFetchCommand([], 'en_US'));
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleFetchCommand::class);
+		$command->setId('en_US');
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
 		$this->assertTrue(is_int($result->id));
@@ -219,8 +269,11 @@ class LocaleTest extends Orchestra\Testbench\TestCase
 		fwrite(STDOUT, __METHOD__ . "\n");
 
 		$app = $this->createApplication();
-		$bus = $app->make('Illuminate\Contracts\Bus\Dispatcher');
-		$result = $bus->dispatch( new Congraph\Locales\Commands\Locales\LocaleGetCommand([]));
+		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+
+		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleGetCommand::class);
+		
+		$result = $bus->dispatch($command);
 
 		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
 		$this->assertEquals(4, count($result));
