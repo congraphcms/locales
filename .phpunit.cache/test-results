@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"LocaleTest::testCreateLocale":0.014,"LocaleTest::testCreateException":0.013,"LocaleTest::testUpdateLocale":0.016,"LocaleTest::testUpdateException":0.014,"LocaleTest::testDeleteLocale":0.013,"LocaleTest::testDeleteException":0.014,"LocaleTest::testFetchLocale":0.016,"LocaleTest::testFetchLocaleByCode":0.014,"LocaleTest::testGetLocales":0.015}}
