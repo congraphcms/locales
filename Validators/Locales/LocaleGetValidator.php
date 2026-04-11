@@ -11,10 +11,8 @@
 namespace Congraph\Locales\Validators\Locales;
 
 use Congraph\Core\Bus\RepositoryCommand;
+use Congraph\Core\Exceptions\BadRequestException;
 use Congraph\Core\Validation\Validator;
-
-use Congraph\Contracts\Locales\LocaleRepositoryContract;
-
 
 /**
  * LocaleGetValidator class

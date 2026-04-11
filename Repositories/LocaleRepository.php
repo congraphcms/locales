@@ -183,7 +183,7 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 		
 		if(Trunk::has($params, 'locale'))
 		{
-			$locale = Trunk::get($id, 'locale');
+			$locale = Trunk::get($params, 'locale');
 			$locale->clearIncluded();
 			$locale->load($include);
 			$meta = ['id' => $id, 'include' => $include];
@@ -300,7 +300,7 @@ class LocaleRepository extends AbstractRepository implements LocaleRepositoryCon
 		
 		if(Trunk::has($params, 'locale'))
 		{
-			$locale = Trunk::get($id, 'locale');
+			$locale = Trunk::get($params, 'locale');
 			$locale->clearIncluded();
 			$locale->load($include);
 			$meta = ['code' => $code, 'include' => $include];

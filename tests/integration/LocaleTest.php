@@ -1,284 +1,198 @@
 <?php
 
-use Illuminate\Support\Facades\Cache;
-use Symfony\Component\VarDumper\VarDumper as Dumper;
+require_once __DIR__ . '/../Fixtures/DatabaseTestCase.php';
 
-require_once(__DIR__ . '/../database/seeders/LocaleTestDbSeeder.php');
-require_once(__DIR__ . '/../database/seeders/ClearDB.php');
+use Congraph\Core\Bus\CommandDispatcher;
+use Congraph\Core\Exceptions\NotFoundException;
+use Congraph\Core\Exceptions\ValidationException;
+use Congraph\Core\Repositories\Collection;
+use Congraph\Core\Repositories\Model;
+use Congraph\Locales\Commands\Locales\LocaleCreateCommand;
+use Congraph\Locales\Commands\Locales\LocaleDeleteCommand;
+use Congraph\Locales\Commands\Locales\LocaleFetchCommand;
+use Congraph\Locales\Commands\Locales\LocaleGetCommand;
+use Congraph\Locales\Commands\Locales\LocaleUpdateCommand;
 
-class LocaleTest extends Orchestra\Testbench\TestCase
+final class LocaleTest extends DatabaseTestCase
 {
-
-	// ----------------------------------------
-    // ENVIRONMENT
-    // ----------------------------------------
-
-    protected function getPackageProviders($app)
+	protected function seeders(): array
 	{
-		return ['Congraph\Locales\LocalesServiceProvider', 'Congraph\Core\CoreServiceProvider'];
+		return [
+			Database\Seeders\LocaleTestDbSeeder::class,
+		];
 	}
 
-    /**
-	 * Define environment setup.
-	 *
-	 * @param  \Illuminate\Foundation\Application  $app
-	 *
-	 * @return void
-	 */
-	protected function defineEnvironment($app)
+	protected function cleanupSeeders(): array
 	{
-		$app['config']->set('database.default', 'testbench');
-		$app['config']->set('database.connections.testbench', [
-			'driver'   	=> 'mysql',
-			'host'      => '127.0.0.1',
-			'port'		=> '3306',
-			'database'	=> 'congraph_testbench',
-			'username'  => 'root',
-			'password'  => '',
-			'charset'   => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'prefix'    => '',
-		]);
-
+		return [
+			Database\Seeders\ClearDB::class,
+		];
 	}
 
-    // ----------------------------------------
-    // DATABASE
-    // ----------------------------------------
-
-    /**
-     * Define database migrations.
-     *
-     * @return void
-     */
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(realpath(__DIR__.'/../database/migrations'));
-
-        $this->artisan('migrate', ['--database' => 'testbench'])->run();
-
-        $this->beforeApplicationDestroyed(function () {
-            $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
-        });
-    }
-
-
-    // ----------------------------------------
-    // SETUP
-    // ----------------------------------------
-
-    public function setUp(): void {
-		parent::setUp();
-
-		$this->d = new Dumper();
-
-        $this->artisan('db:seed', [
-			'--class' => 'LocaleTestDbSeeder'
-		]);
-	}
-
-	public function tearDown(): void {
-		$this->artisan('db:seed', [
-			'--class' => 'ClearDB'
-		]);
-		parent::tearDown();
-	}
-
-    // ----------------------------------------
-    // TESTS **********************************
-    // ----------------------------------------
-
-
-	public function testCreateLocale()
+	public function testCreateLocale(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$params = [
+		$command = $this->app->make(LocaleCreateCommand::class);
+		$command->setParams([
 			'code' => 'cz_CZ',
 			'name' => 'Czech',
-			'description' => 'Czech language'
-		];
+			'description' => 'Czech language',
+		]);
 
+		$result = $this->dispatch($command);
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleCreateCommand::class);
-		$command->setParams($params);
-		
-		$result = $bus->dispatch($command);
-		
-		$this->d->dump($result->toArray());
-		$this->assertEquals('Czech', $result->name);
-		$this->assertEquals('cz_CZ', $result->code);
-		$this->assertEquals('Czech language', $result->description);
-		
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame('Czech', $result->name);
+		$this->assertSame('cz_CZ', $result->code);
+		$this->assertSame('Czech language', $result->description);
+
 		$this->assertDatabaseHas('locales', [
-			'id' => 5, 
-			'code' => 'cz_CZ', 
+			'code' => 'cz_CZ',
 			'name' => 'Czech',
-			'description' => 'Czech language'
+			'description' => 'Czech language',
 		]);
 	}
 
-	public function testCreateException()
+	public function testCreateLocaleThrowsValidationExceptionForInvalidCode(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$this->expectException(ValidationException::class);
 
-		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
-
-		$params = [
+		$command = $this->app->make(LocaleCreateCommand::class);
+		$command->setParams([
 			'code' => 'en_enneene',
-			'name' => 'English'
-		];
+			'name' => 'English',
+		]);
 
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleCreateCommand::class);
-		$command->setParams($params);
-		
-		$result = $bus->dispatch($command);
-		
+		$this->dispatch($command);
 	}
 
-	public function testUpdateLocale()
+	public function testUpdateLocale(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-
-		$params = [
-			'code' => 'en_GB'
-		];
-
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleUpdateCommand::class);
-		$command->setParams($params);
+		$command = $this->app->make(LocaleUpdateCommand::class);
 		$command->setId(1);
-		
-		$result = $bus->dispatch($command);
-		
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
-		$this->assertTrue(is_int($result->id));
-		$this->assertEquals(1, $result->id);
-		$this->assertEquals('en_GB', $result->code);
-		$this->assertEquals('English', $result->name);
-		
-		$this->d->dump($result->toArray());
+		$command->setParams([
+			'code' => 'en_GB',
+		]);
+
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame(1, $result->id);
+		$this->assertSame('en_GB', $result->code);
+		$this->assertSame('English', $result->name);
 	}
 
-	public function testUpdateException()
+	public function testUpdateLocaleThrowsValidationExceptionForInvalidCode(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$this->expectException(ValidationException::class);
 
-		$this->expectException(\Congraph\Core\Exceptions\ValidationException::class);
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-
-		$params = [
-			'code' => 'en_enene'
-		];
-
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleUpdateCommand::class);
-		$command->setParams($params);
+		$command = $this->app->make(LocaleUpdateCommand::class);
 		$command->setId(1);
-		
-		$result = $bus->dispatch($command);
-		$this->d->dump($result->toArray());
-		
+		$command->setParams([
+			'code' => 'en_enene',
+		]);
+
+		$this->dispatch($command);
 	}
 
-	public function testDeleteLocale()
+	public function testDeleteLocale(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleDeleteCommand::class);
+		$command = $this->app->make(LocaleDeleteCommand::class);
 		$command->setId(1);
-		
-		$result = $bus->dispatch($command);
 
-		$this->assertEquals(1, $result);
-		$this->d->dump($result);
+		$result = $this->dispatch($command);
 
+		$this->assertSame(1, $result);
+		$this->assertDatabaseMissing('locales', ['id' => 1]);
 	}
 
-	
-	public function testDeleteException()
+	public function testDeleteLocaleThrowsWhenLocaleDoesNotExist(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$this->expectException(NotFoundException::class);
 
-		$this->expectException(\Congraph\Core\Exceptions\NotFoundException::class);
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleDeleteCommand::class);
+		$command = $this->app->make(LocaleDeleteCommand::class);
 		$command->setId(133);
-		
-		$result = $bus->dispatch($command);
+
+		$this->dispatch($command);
 	}
-	
-	public function testFetchLocale()
+
+	public function testFetchLocaleById(): void
 	{
-
-		fwrite(STDOUT, __METHOD__ . "\n");
-
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
-
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleFetchCommand::class);
+		$command = $this->app->make(LocaleFetchCommand::class);
 		$command->setId(1);
-		
-		$result = $bus->dispatch($command);
 
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
-		$this->assertTrue(is_int($result->id));
-		$this->assertEquals('en_US', $result->code);
-		$this->assertEquals('English', $result->name);
-		$this->d->dump($result->toArray());
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame('en_US', $result->code);
+		$this->assertSame('English', $result->name);
 	}
 
-	public function testFetchLocaleByCode()
+	public function testFetchLocaleByIdCanBeRepeated(): void
 	{
+		$command = $this->app->make(LocaleFetchCommand::class);
+		$command->setId(1);
 
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$first = $this->dispatch($command);
+		$second = $this->dispatch($command);
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$this->assertInstanceOf(Model::class, $first);
+		$this->assertInstanceOf(Model::class, $second);
+		$this->assertSame('en_US', $second->code);
+	}
 
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleFetchCommand::class);
+	public function testFetchLocaleByCode(): void
+	{
+		$command = $this->app->make(LocaleFetchCommand::class);
 		$command->setId('en_US');
-		
-		$result = $bus->dispatch($command);
 
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Model);
-		$this->assertTrue(is_int($result->id));
-		$this->assertEquals('en_US', $result->code);
-		$this->assertEquals('English', $result->name);
-		$this->d->dump($result->toArray());
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Model::class, $result);
+		$this->assertSame('en_US', $result->code);
+		$this->assertSame('English', $result->name);
 	}
 
-	
-	public function testGetLocales()
+	public function testFetchLocaleByCodeCanBeRepeated(): void
 	{
-		fwrite(STDOUT, __METHOD__ . "\n");
+		$command = $this->app->make(LocaleFetchCommand::class);
+		$command->setId('en_US');
 
-		$app = $this->createApplication();
-		$bus = $app->make('Congraph\Core\Bus\CommandDispatcher');
+		$first = $this->dispatch($command);
+		$second = $this->dispatch($command);
 
-		$command = $app->make(\Congraph\Locales\Commands\Locales\LocaleGetCommand::class);
-		
-		$result = $bus->dispatch($command);
-
-		$this->assertTrue($result instanceof Congraph\Core\Repositories\Collection);
-		$this->assertEquals(4, count($result));
-		$this->d->dump($result->toArray());
-
+		$this->assertInstanceOf(Model::class, $first);
+		$this->assertInstanceOf(Model::class, $second);
+		$this->assertSame('en_US', $second->code);
 	}
 
+	public function testGetLocalesReturnsCollection(): void
+	{
+		$command = $this->app->make(LocaleGetCommand::class);
+
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Collection::class, $result);
+		$this->assertCount(4, $result);
+	}
+
+	public function testGetLocalesCanBeFiltered(): void
+	{
+		$command = $this->app->make(LocaleGetCommand::class);
+		$command->setParams([
+			'filter' => [
+				'code' => 'en_US',
+			],
+		]);
+
+		$result = $this->dispatch($command);
+
+		$this->assertInstanceOf(Collection::class, $result);
+		$this->assertCount(1, $result);
+		$this->assertSame('en_US', $result[0]->code);
+	}
+
+	private function dispatch(object $command): mixed
+	{
+		return $this->app->make(CommandDispatcher::class)->dispatch($command);
+	}
 }

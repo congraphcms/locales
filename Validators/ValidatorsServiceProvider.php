@@ -10,6 +10,11 @@
 
 namespace Congraph\Locales\Validators;
 
+use Congraph\Locales\Commands\Locales\LocaleCreateCommand;
+use Congraph\Locales\Commands\Locales\LocaleDeleteCommand;
+use Congraph\Locales\Commands\Locales\LocaleFetchCommand;
+use Congraph\Locales\Commands\Locales\LocaleGetCommand;
+use Congraph\Locales\Commands\Locales\LocaleUpdateCommand;
 use Illuminate\Support\ServiceProvider;
 
 use Congraph\Locales\Validators\Locales\LocaleCreateValidator;
@@ -17,6 +22,8 @@ use Congraph\Locales\Validators\Locales\LocaleUpdateValidator;
 use Congraph\Locales\Validators\Locales\LocaleDeleteValidator;
 use Congraph\Locales\Validators\Locales\LocaleFetchValidator;
 use Congraph\Locales\Validators\Locales\LocaleGetValidator;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
 
 /**
  * ValidatorsServiceProvider service provider for validators
@@ -61,19 +68,14 @@ class ValidatorsServiceProvider extends ServiceProvider {
 		
 		$mappings = [
 			// Locales
-			'Congraph\Locales\Commands\Locales\LocaleCreateCommand' => 
-				'Congraph\Locales\Validators\Locales\LocaleCreateValidator@validate',
-			'Congraph\Locales\Commands\Locales\LocaleUpdateCommand' => 
-				'Congraph\Locales\Validators\Locales\LocaleUpdateValidator@validate',
-			'Congraph\Locales\Commands\Locales\LocaleDeleteCommand' => 
-				'Congraph\Locales\Validators\Locales\LocaleDeleteValidator@validate',
-			'Congraph\Locales\Commands\Locales\LocaleFetchCommand' => 
-				'Congraph\Locales\Validators\Locales\LocaleFetchValidator@validate',
-			'Congraph\Locales\Commands\Locales\LocaleGetCommand' => 
-				'Congraph\Locales\Validators\Locales\LocaleGetValidator@validate',
+			LocaleCreateCommand::class => LocaleCreateValidator::class . '@validate',
+			LocaleUpdateCommand::class => LocaleUpdateValidator::class . '@validate',
+			LocaleDeleteCommand::class => LocaleDeleteValidator::class . '@validate',
+			LocaleFetchCommand::class => LocaleFetchValidator::class . '@validate',
+			LocaleGetCommand::class => LocaleGetValidator::class . '@validate',
 		];
 
-		$this->app->make('Illuminate\Contracts\Bus\Dispatcher')->mapValidators($mappings);
+		$this->app->make(Dispatcher::class)->mapValidators($mappings);
 	}
 
 	/**
@@ -84,23 +86,23 @@ class ValidatorsServiceProvider extends ServiceProvider {
 	public function registerValidators() {
 
 		// Locales
-		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleCreateValidator', function($app){
+		$this->app->bind(LocaleCreateValidator::class, function($app){
 			return new LocaleCreateValidator();
 		});
 
-		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleUpdateValidator', function($app){
-			return new LocaleUpdateValidator($app['Congraph\Contracts\Locales\LocaleRepositoryContract']);
+		$this->app->bind(LocaleUpdateValidator::class, function($app){
+			return new LocaleUpdateValidator($app[LocaleRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleDeleteValidator', function($app){
-			return new LocaleDeleteValidator($app['Congraph\Contracts\Locales\LocaleRepositoryContract']);
+		$this->app->bind(LocaleDeleteValidator::class, function($app){
+			return new LocaleDeleteValidator($app[LocaleRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleFetchValidator', function($app){
-			return new LocaleFetchValidator($app['Congraph\Contracts\Locales\LocaleRepositoryContract']);
+		$this->app->bind(LocaleFetchValidator::class, function($app){
+			return new LocaleFetchValidator($app[LocaleRepositoryContract::class]);
 		});
 
-		$this->app->bind('Congraph\Locales\Validators\Locales\LocaleGetValidator', function($app){
+		$this->app->bind(LocaleGetValidator::class, function($app){
 			return new LocaleGetValidator();
 		});
 	}
@@ -115,11 +117,11 @@ class ValidatorsServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Locales
-			'Congraph\Locales\Validators\Locales\LocaleCreateValidator',
-			'Congraph\Locales\Validators\Locales\LocaleUpdateValidator',
-			'Congraph\Locales\Validators\Locales\LocaleDeleteValidator',
-			'Congraph\Locales\Validators\Locales\LocaleFetchValidator',
-			'Congraph\Locales\Validators\Locales\LocaleGetValidator'
+			LocaleCreateValidator::class,
+			LocaleUpdateValidator::class,
+			LocaleDeleteValidator::class,
+			LocaleFetchValidator::class,
+			LocaleGetValidator::class,
 		];
 	}
 }

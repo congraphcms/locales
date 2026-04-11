@@ -31,29 +31,33 @@ class LocaleTestDbSeeder extends Seeder {
 
 	public function run()
 	{
-		DB::table('locales')->truncate();
+		DB::table('locales')->delete();
 		DB::table('locales')->insert([
 			[
 				'code' => 'en_US',
 				'name' => 'English',
+				'description' => 'English language',
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
 				'code' => 'es_SP',
 				'name' => 'Spanish',
+				'description' => 'Spanish language',
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
 				'code' => 'fr',
 				'name' => 'Franch',
+				'description' => 'French language',
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			],
 			[
 				'code' => 'sr_Latn_RS',
 				'name' => 'Serbian',
+				'description' => 'Serbian language',
 				'created_at' => date("Y-m-d H:i:s"),
 				'updated_at' => date("Y-m-d H:i:s")
 			]

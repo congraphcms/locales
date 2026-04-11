@@ -81,6 +81,7 @@ class LocaleUpdateValidator extends Validator
 	public function validate(RepositoryCommand $command)
 	{
 		$locale = $this->localeRepository->fetch($command->id);
+		$command->params['id'] = $command->id;
 		$this->validateParams($command->params, $this->rules, true);
 
 		if( $this->exception->hasErrors() )

@@ -10,6 +10,8 @@
 
 namespace Congraph\Locales\Repositories;
 
+use Congraph\Contracts\Core\ObjectResolverContract;
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -26,13 +28,6 @@ use Illuminate\Support\ServiceProvider;
  * @version  	0.1.0-alpha
  */
 class RepositoriesServiceProvider extends ServiceProvider {
-
-	/**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-	protected $defer = true;
 
 	/**
 	 * Boot
@@ -60,14 +55,14 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	 */
 	protected function registerRepositories()
 	{
-		$this->app->singleton('Congraph\Locales\Repositories\LocaleRepository', function($app) {
+		$this->app->singleton(LocaleRepository::class, function($app) {
 			return new LocaleRepository(
 				$app['db']->connection()
 			);
 		});
 
 		$this->app->alias(
-			'Congraph\Locales\Repositories\LocaleRepository', 'Congraph\Contracts\Locales\LocaleRepositoryContract'
+			LocaleRepository::class, LocaleRepositoryContract::class
 		);
 	}
 
@@ -79,10 +74,10 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	protected function mapObjectResolvers()
 	{
 		$mappings = [
-			'locale' => 'Congraph\Locales\Repositories\LocaleRepository'
+			'locale' => LocaleRepository::class,
 		];
 
-		$this->app->make('Congraph\Contracts\Core\ObjectResolverContract')->maps($mappings);
+		$this->app->make(ObjectResolverContract::class)->maps($mappings);
 	}
 	/**
 	 * Get the services provided by the provider.
@@ -92,8 +87,8 @@ class RepositoriesServiceProvider extends ServiceProvider {
 	public function provides()
 	{
 		return [
-			'Congraph\Locales\Repositories\LocaleRepository',
-			'Congraph\Contracts\Locales\LocaleRepositoryContract'
+			LocaleRepository::class,
+			LocaleRepositoryContract::class,
 		];
 	}
 

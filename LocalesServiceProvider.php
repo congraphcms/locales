@@ -10,6 +10,9 @@
 
 namespace Congraph\Locales;
 
+use Congraph\Locales\Commands\CommandsServiceProvider;
+use Congraph\Locales\Repositories\RepositoriesServiceProvider;
+use Congraph\Locales\Validators\ValidatorsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -57,7 +60,7 @@ class LocalesServiceProvider extends ServiceProvider {
 
 		// Repositories
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Locales\Repositories\RepositoriesServiceProvider');
+		$this->app->register(RepositoriesServiceProvider::class);
 		
 		// Handlers
 		// -----------------------------------------------------------------------------
@@ -65,11 +68,11 @@ class LocalesServiceProvider extends ServiceProvider {
 
 		// Commands
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Locales\Commands\CommandsServiceProvider');
+		$this->app->register(CommandsServiceProvider::class);
 
 		// Validators
 		// -----------------------------------------------------------------------------
-		$this->app->register('Congraph\Locales\Validators\ValidatorsServiceProvider');
+		$this->app->register(ValidatorsServiceProvider::class);
 
 	}
 

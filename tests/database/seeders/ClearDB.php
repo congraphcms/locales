@@ -31,7 +31,7 @@ class ClearDB extends Seeder {
 
 	public function run()
 	{
-		DB::table('locales')->truncate();
+		DB::table('locales')->delete();
 	
 	}
 

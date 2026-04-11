@@ -10,6 +10,8 @@
 
 namespace Congraph\Locales\Commands;
 
+use Congraph\Contracts\Locales\LocaleRepositoryContract;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
 use Congraph\Locales\Commands\Locales\LocaleCreateCommand;
@@ -31,14 +33,7 @@ use Congraph\Locales\Commands\Locales\LocaleGetCommand;
  * @since 		0.1.0-alpha
  * @version  	0.1.0-alpha
  */
-class CommandsServiceProvider extends ServiceProvider {
-
-	/**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-	protected $defer = true;
+class CommandsServiceProvider extends ServiceProvider implements DeferrableProvider {
 
 
 	/**
@@ -57,23 +52,23 @@ class CommandsServiceProvider extends ServiceProvider {
 	*/
 	public function registerCommands() {
 		$this->app->bind(LocaleCreateCommand::class, function($app){
-			return new LocaleCreateCommand($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
+			return new LocaleCreateCommand($app->make(LocaleRepositoryContract::class));
 		});
 
 		$this->app->bind(LocaleUpdateCommand::class, function($app){
-			return new LocaleUpdateCommand($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
+			return new LocaleUpdateCommand($app->make(LocaleRepositoryContract::class));
 		});
 
 		$this->app->bind(LocaleDeleteCommand::class, function($app){
-			return new LocaleDeleteCommand($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
+			return new LocaleDeleteCommand($app->make(LocaleRepositoryContract::class));
 		});
 
 		$this->app->bind(LocaleFetchCommand::class, function($app){
-			return new LocaleFetchCommand($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
+			return new LocaleFetchCommand($app->make(LocaleRepositoryContract::class));
 		});
 
 		$this->app->bind(LocaleGetCommand::class, function($app){
-			return new LocaleGetCommand($app->make('Congraph\Contracts\Locales\LocaleRepositoryContract'));
+			return new LocaleGetCommand($app->make(LocaleRepositoryContract::class));
 		});
 	}
 
@@ -86,11 +81,11 @@ class CommandsServiceProvider extends ServiceProvider {
 	{
 		return [
 			// Locales
-			'Congraph\Locales\Commands\Locales\LocaleCreateCommand',
-			'Congraph\Locales\Commands\Locales\LocaleUpdateCommand',
-			'Congraph\Locales\Commands\Locales\LocaleDeleteCommand',
-			'Congraph\Locales\Commands\Locales\LocaleFetchCommand',
-			'Congraph\Locales\Commands\Locales\LocaleGetCommand'
+			LocaleCreateCommand::class,
+			LocaleUpdateCommand::class,
+			LocaleDeleteCommand::class,
+			LocaleFetchCommand::class,
+			LocaleGetCommand::class,
 		];
 	}
 }
